@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "target": "ES2019",
+    "strict": true
+  },
+  "include": ["src/**/*.ts"]
+}

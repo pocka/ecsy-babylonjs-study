@@ -1,0 +1,23 @@
+# ---------------------------------------------
+# Do not write environment specific rules here.
+# ---------------------------------------------
+
+# Project
+/dist
+
+# Common
+*.log
+.tmp
+.tmp[-.]*
+
+# Node.js / JavaScript
+node_modules
+package-lock.json
+*.tgz
+
+# Yarn v2
+# https://yarnpkg.com/advanced/qa#which-files-should-be-gitignored
+.yarn/*
+!.yarn/cache
+!.yarn/releases
+!.yarn/plugins
