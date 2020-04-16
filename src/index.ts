@@ -23,28 +23,61 @@ const engine = new babylon.Engine(canvas, true, {
 
 const scene = new babylon.Scene(engine);
 
-const camera = new babylon.FreeCamera(
+const camera = new babylon.ArcRotateCamera(
   "camera",
-  new babylon.Vector3(0, 5, -20),
+  1,
+  1,
+  20,
+  new babylon.Vector3(0, 0, 0),
   scene
 );
 
-camera.setTarget(babylon.Vector3.Zero());
 camera.attachControl(canvas, false);
 
-const light = new babylon.HemisphericLight(
+const light = new babylon.DirectionalLight(
   "light",
-  new babylon.Vector3(0, 1, 0),
+  new babylon.Vector3(0, -1, 0),
   scene
 );
+
+light.position = new babylon.Vector3(3, 4, 0);
+light.intensity = 0.8;
 
 const sphere = babylon.SphereBuilder.CreateSphere(
   "sphere",
   {
     diameter: 2,
+    updatable: false,
   },
   scene
 );
+
+sphere.position.y = 1;
+
+const ground = babylon.MeshBuilder.CreateGround(
+  "ground",
+  {
+    height: 6,
+    width: 6,
+    subdivisions: 2,
+  },
+  scene
+);
+ground.position.y = -0.5;
+ground.receiveShadows = true;
+
+const red = new babylon.StandardMaterial("red", scene);
+
+red.diffuseColor = new babylon.Color3(0.8, 0, 0);
+
+ground.material = red;
+
+const shadowGenerator = new babylon.ShadowGenerator(512, light);
+
+shadowGenerator.addShadowCaster(sphere);
+shadowGenerator.useBlurExponentialShadowMap = true;
+shadowGenerator.blurBoxOffset = 2.0;
+shadowGenerator.darkness = 0.5;
 
 window.addEventListener("resize", () => engine.resize());
 
