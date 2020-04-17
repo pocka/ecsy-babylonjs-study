@@ -1,6 +1,8 @@
 import * as babylon from "babylonjs";
 import { World } from "ecsy";
 
+import { demoScene } from "./demoScene";
+
 const world = new World();
 
 console.log("Hello, ", world);
@@ -21,65 +23,27 @@ const engine = new babylon.Engine(canvas, true, {
   stencil: true,
 });
 
-const scene = new babylon.Scene(engine);
+let currentScene: babylon.Scene | null = null;
 
-const camera = new babylon.ArcRotateCamera(
-  "camera",
-  1,
-  1,
-  20,
-  new babylon.Vector3(0, 0, 0),
-  scene
-);
+const renderDemoScene = () => {
+  currentScene?.dispose();
+  currentScene = null;
 
-camera.attachControl(canvas, false);
+  engine.displayLoadingUI();
 
-const light = new babylon.DirectionalLight(
-  "light",
-  new babylon.Vector3(0, -1, 0),
-  scene
-);
-
-light.position = new babylon.Vector3(3, 4, 0);
-light.intensity = 0.8;
-
-const sphere = babylon.SphereBuilder.CreateSphere(
-  "sphere",
-  {
-    diameter: 2,
-    updatable: false,
-  },
-  scene
-);
-
-sphere.position.y = 1;
-
-const ground = babylon.MeshBuilder.CreateGround(
-  "ground",
-  {
-    height: 6,
-    width: 6,
-    subdivisions: 2,
-  },
-  scene
-);
-ground.position.y = -0.5;
-ground.receiveShadows = true;
-
-const red = new babylon.StandardMaterial("red", scene);
-
-red.diffuseColor = new babylon.Color3(0.8, 0, 0);
-
-ground.material = red;
-
-const shadowGenerator = new babylon.ShadowGenerator(512, light);
-
-shadowGenerator.addShadowCaster(sphere);
-shadowGenerator.useBlurExponentialShadowMap = true;
-shadowGenerator.blurBoxOffset = 2.0;
-shadowGenerator.darkness = 0.5;
+  demoScene(engine, world, {
+    onExit() {
+      renderDemoScene();
+    },
+  }).then((scene) => {
+    currentScene = scene;
+    engine.hideLoadingUI();
+  });
+};
 
 window.addEventListener("resize", () => engine.resize());
+
+renderDemoScene();
 
 let lastTime = performance.now();
 
@@ -87,7 +51,7 @@ engine.runRenderLoop(() => {
   const time = performance.now() / 1000;
   const delta = time - lastTime;
 
-  scene.render();
+  currentScene?.render();
   world.execute(delta, time);
 
   lastTime = time;
