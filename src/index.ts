@@ -3,7 +3,16 @@ import { World } from "ecsy";
 
 import { demoScene } from "./demoScene";
 
+import { LightingSystem } from "./systems/LightingSystem";
+import { RendererSystem } from "./systems/RendererSystem";
+import { ShadowCastingSystem } from "./systems/ShadowCastingSystem";
+
 const world = new World();
+
+world
+  .registerSystem(LightingSystem)
+  .registerSystem(ShadowCastingSystem)
+  .registerSystem(RendererSystem);
 
 console.log("Hello, ", world);
 

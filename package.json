@@ -33,5 +33,7 @@
   "lint-staged": {
     "*.{css,js,ts,md,json,yml,yaml}": "prettier --write"
   },
-  "prettier": {}
+  "prettier": {
+    "semi": false
+  }
 }
