@@ -30,6 +30,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
     ],
     "fallbackPool": [
       [
+        "@types/webpack-env",
+        "npm:1.15.1"
+      ],
+      [
         "@webpack-cli/serve",
         "virtual:f6cbab7f7b98bbfcf17a025ec6c9b2e9176998cdaad5626aca9821eaccfc4753c2cd73fbf089dfc2fe41608aeca211354407272622e24733fd0a49e85ddf08e7#npm:0.2.0"
       ],
@@ -89,6 +93,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         [null, {
           "packageLocation": "./",
           "packageDependencies": [
+            ["@types/webpack-env", "npm:1.15.1"],
             ["@webpack-cli/serve", "virtual:f6cbab7f7b98bbfcf17a025ec6c9b2e9176998cdaad5626aca9821eaccfc4753c2cd73fbf089dfc2fe41608aeca211354407272622e24733fd0a49e85ddf08e7#npm:0.2.0"],
             ["@yarnpkg/pnpify", "virtual:f6cbab7f7b98bbfcf17a025ec6c9b2e9176998cdaad5626aca9821eaccfc4753c2cd73fbf089dfc2fe41608aeca211354407272622e24733fd0a49e85ddf08e7#npm:2.0.0-rc.20"],
             ["babylonjs", "npm:4.1.0"],
@@ -1932,6 +1937,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/uglify-js", "npm:3.9.0"],
             ["@types/webpack-sources", "npm:0.1.7"],
             ["source-map", "npm:0.6.1"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@types/webpack-env", [
+        ["npm:1.15.1", {
+          "packageLocation": "./.yarn/cache/@types-webpack-env-npm-1.15.1-0b9553c102-2.zip/node_modules/@types/webpack-env/",
+          "packageDependencies": [
+            ["@types/webpack-env", "npm:1.15.1"]
           ],
           "linkType": "HARD",
         }]
@@ -4405,6 +4419,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",
           "packageDependencies": [
             ["ecsy-babylonjs-study", "workspace:."],
+            ["@types/webpack-env", "npm:1.15.1"],
             ["@webpack-cli/serve", "virtual:f6cbab7f7b98bbfcf17a025ec6c9b2e9176998cdaad5626aca9821eaccfc4753c2cd73fbf089dfc2fe41608aeca211354407272622e24733fd0a49e85ddf08e7#npm:0.2.0"],
             ["@yarnpkg/pnpify", "virtual:f6cbab7f7b98bbfcf17a025ec6c9b2e9176998cdaad5626aca9821eaccfc4753c2cd73fbf089dfc2fe41608aeca211354407272622e24733fd0a49e85ddf08e7#npm:2.0.0-rc.20"],
             ["babylonjs", "npm:4.1.0"],

@@ -4,11 +4,13 @@ import { World } from "ecsy"
 import { SceneCreator } from "./scenes"
 
 import { Light } from "./components/Light"
+import { Position } from "./components/Position"
 import { Renderable } from "./components/Renderable"
 import { ShadowCaster } from "./components/ShadowCaster"
 import { Sphere } from "./components/Sphere"
 
 import { LightingSystem } from "./systems/LightingSystem"
+import { PositioningSystem } from "./systems/PositioningSystem"
 import { RendererSystem } from "./systems/RendererSystem"
 import { ShadowCastingSystem } from "./systems/ShadowCastingSystem"
 
@@ -32,13 +34,15 @@ export const demoScene: SceneCreator<DemoSceneProps> = async (
     .registerSystem(LightingSystem)
     .registerSystem(ShadowCastingSystem)
     .registerSystem(RendererSystem)
+    .registerSystem(PositioningSystem)
 
   const scene = new bb.Scene(engine)
 
   const sphere = world
     .createEntity()
-    .addComponent(Sphere, { radius: 1, position: new bb.Vector3(0, 1, 0) })
+    .addComponent(Sphere, { radius: 1 })
     .addComponent(Renderable, { scene })
+    .addComponent(Position, { value: new bb.Vector3(0, 1, 0) })
     .addComponent(ShadowCaster)
 
   const balls = Array.from({ length: 100 }).map(() => {
@@ -46,22 +50,28 @@ export const demoScene: SceneCreator<DemoSceneProps> = async (
       .createEntity()
       .addComponent(Sphere, {
         radius: rand(0.1, 0.5),
-        position: new bb.Vector3(
+      })
+      .addComponent(Renderable, { scene })
+      .addComponent(ShadowCaster)
+      .addComponent(Position, {
+        value: new bb.Vector3(
           rand(-GROUND_SIZE / 2, GROUND_SIZE / 2),
           rand(1, 8),
           rand(-GROUND_SIZE / 2, GROUND_SIZE / 2)
         ),
       })
-      .addComponent(Renderable, { scene })
-      .addComponent(ShadowCaster)
   })
 
-  const light = world.createEntity().addComponent(Light, {
-    scene,
-    lookingAt: new bb.Vector3(0, -1, 0),
-    position: new bb.Vector3(3, 10, 0),
-    intensity: 0.8,
-  })
+  const light = world
+    .createEntity()
+    .addComponent(Light, {
+      scene,
+      lookingAt: new bb.Vector3(0, -1, 0),
+      intensity: 0.8,
+    })
+    .addComponent(Position, {
+      value: new bb.Vector3(3, 10, 0),
+    })
 
   scene.onKeyboardObservable.add(({ event, type }) => {
     if (type !== bb.KeyboardEventTypes.KEYUP || event.key !== "Enter") {

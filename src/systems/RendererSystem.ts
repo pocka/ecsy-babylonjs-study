@@ -1,14 +1,14 @@
 import * as bb from "babylonjs"
 import { Not, System } from "ecsy"
 
-import { Sphere } from "../components/Sphere"
 import { Renderable } from "../components/Renderable"
 import { RenderableSSC } from "../components/RenderableSSC"
+import { Sphere } from "../components/Sphere"
 
 export class RendererSystem extends System {
   execute() {
     this.queries.addedSpheres.results.forEach((entity) => {
-      const { position, radius } = entity.getComponent(Sphere)
+      const { radius } = entity.getComponent(Sphere)
       const { scene } = entity.getComponent(Renderable)
 
       const mesh = bb.MeshBuilder.CreateSphere(
@@ -20,17 +20,17 @@ export class RendererSystem extends System {
         scene
       )
 
-      mesh.position = position
-
       entity.addComponent(RenderableSSC, { mesh })
     })
 
     this.queries.removed.results.forEach((entity) => {
-      console.debug(`Freeing mesh resource [entity id=${entity.id}]`)
-
       const { mesh } = entity.getComponent(RenderableSSC)
 
       mesh?.dispose()
+
+      if (process.env.NODE_ENV === "development") {
+        console.debug("Disposed mesh resource.")
+      }
 
       entity.removeComponent(RenderableSSC)
     })

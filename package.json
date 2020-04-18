@@ -13,6 +13,7 @@
     "ecsy": "^0.2.3"
   },
   "devDependencies": {
+    "@types/webpack-env": "^1.15.1",
     "@webpack-cli/serve": "^0.2.0",
     "@yarnpkg/pnpify": "^2.0.0-rc.20",
     "html-webpack-plugin": "^4.2.0",

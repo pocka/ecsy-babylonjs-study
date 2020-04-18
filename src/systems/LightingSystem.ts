@@ -3,13 +3,14 @@ import { Not, System } from "ecsy"
 
 import { Light } from "../components/Light"
 import { LightSSC } from "../components/LightSSC"
+import { Position } from "../components/Position"
 
 export class LightingSystem extends System {
   execute() {
     this.queries.added.results.forEach((entity) => {
-      const { scene, position, lookingAt, intensity } = entity.getComponent(
-        Light
-      )
+      const { scene, lookingAt, intensity } = entity.getComponent(Light)
+
+      const position = entity.getComponent(Position).value
 
       if (!scene) {
         return
@@ -33,12 +34,14 @@ export class LightingSystem extends System {
     })
 
     this.queries.removed.results.forEach((entity) => {
-      console.debug(`Freeing light resource [entity id=${entity.id}]`)
-
       const component = entity.getComponent(LightSSC)
 
       component.lightRef?.dispose()
       component.shadowRef?.dispose()
+
+      if (process.env.NODE_ENV === "development") {
+        console.debug("Disposed light resource and shadow generator.")
+      }
 
       entity.removeComponent(LightSSC)
     })
@@ -46,7 +49,7 @@ export class LightingSystem extends System {
 
   static queries = {
     added: {
-      components: [Light, Not(LightSSC)],
+      components: [Position, Light, Not(LightSSC)],
     },
     removed: {
       components: [Not(Light), LightSSC],

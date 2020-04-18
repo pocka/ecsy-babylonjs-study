@@ -1,19 +1,14 @@
-import * as bb from "babylonjs";
-
 export class Sphere {
   /**
    * Radius of the sphere.
    */
-  public radius!: number;
-
-  public position!: bb.Vector3;
+  public radius!: number
 
   constructor() {
-    this.reset();
+    this.reset()
   }
 
   reset() {
-    this.radius = 1;
-    this.position = new bb.Vector3(0, 0, 0);
+    this.radius = 1
   }
 }

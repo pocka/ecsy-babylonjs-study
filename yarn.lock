@@ -1544,6 +1544,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/webpack-env@npm:^1.15.1":
+  version: 1.15.1
+  resolution: "@types/webpack-env@npm:1.15.1"
+  checksum: 2/b887875bb3a63c18959b52462e96661d24aeb0f29e3879cf9c779d6afc22cbb54b886af1c6eaafc059d559cf96498e5af60fffc8b4c3c4cc89c57733a5186f04
+  languageName: node
+  linkType: hard
+
 "@types/webpack-sources@npm:*":
   version: 0.1.7
   resolution: "@types/webpack-sources@npm:0.1.7"
@@ -3689,6 +3696,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "ecsy-babylonjs-study@workspace:."
   dependencies:
+    "@types/webpack-env": ^1.15.1
     "@webpack-cli/serve": ^0.2.0
     "@yarnpkg/pnpify": ^2.0.0-rc.20
     babylonjs: ^4.1.0
