@@ -26,6 +26,8 @@ export class RendererSystem extends System {
     })
 
     this.queries.removed.results.forEach((entity) => {
+      console.debug(`Freeing mesh resource [entity id=${entity.id}]`)
+
       const { mesh } = entity.getComponent(RenderableSSC)
 
       mesh?.dispose()

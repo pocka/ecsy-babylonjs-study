@@ -1,8 +1,8 @@
-import * as bb from "babylonjs";
-import * as ecsy from "ecsy";
+import * as bb from "babylonjs"
+
+export type SceneDisposer = () => void
 
 export type SceneCreator<T = {}> = (
   engine: bb.Engine,
-  world: ecsy.World,
   params: T
-) => Promise<bb.Scene>;
+) => Promise<SceneDisposer>

@@ -1,4 +1,5 @@
 import * as bb from "babylonjs"
+import { World } from "ecsy"
 
 import { SceneCreator } from "./scenes"
 
@@ -6,6 +7,12 @@ import { Light } from "./components/Light"
 import { Renderable } from "./components/Renderable"
 import { ShadowCaster } from "./components/ShadowCaster"
 import { Sphere } from "./components/Sphere"
+
+import { LightingSystem } from "./systems/LightingSystem"
+import { RendererSystem } from "./systems/RendererSystem"
+import { ShadowCastingSystem } from "./systems/ShadowCastingSystem"
+
+import { wait } from "./helpers/time"
 
 interface DemoSceneProps {
   onExit?(): void
@@ -17,13 +24,14 @@ const rand = (min: number, max: number) => Math.random() * (max - min) + min
 
 export const demoScene: SceneCreator<DemoSceneProps> = async (
   engine,
-  world,
   { onExit }
 ) => {
-  // Dummy loading
-  await new Promise((resolve) => {
-    setTimeout(() => resolve(), 3000)
-  })
+  const world = new World()
+
+  world
+    .registerSystem(LightingSystem)
+    .registerSystem(ShadowCastingSystem)
+    .registerSystem(RendererSystem)
 
   const scene = new bb.Scene(engine)
 
@@ -33,8 +41,8 @@ export const demoScene: SceneCreator<DemoSceneProps> = async (
     .addComponent(Renderable, { scene })
     .addComponent(ShadowCaster)
 
-  Array.from({ length: 100 }).forEach(() => {
-    world
+  const balls = Array.from({ length: 100 }).map(() => {
+    return world
       .createEntity()
       .addComponent(Sphere, {
         radius: rand(0.1, 0.5),
@@ -62,6 +70,7 @@ export const demoScene: SceneCreator<DemoSceneProps> = async (
 
     light.remove()
     sphere.remove()
+    balls.forEach((ball) => ball.remove())
 
     scene.dispose()
 
@@ -97,5 +106,32 @@ export const demoScene: SceneCreator<DemoSceneProps> = async (
 
   ground.material = red
 
-  return scene
+  // Dummy loading
+  await wait(3000)
+
+  let lastTime = performance.now()
+
+  const renderLoop = () => {
+    const time = performance.now() / 1000
+    const delta = time - lastTime
+
+    scene.render()
+    world.execute(delta, time)
+
+    lastTime = time
+  }
+
+  engine.runRenderLoop(renderLoop)
+
+  return () => {
+    // Run disposing processes
+    renderLoop()
+
+    world.stop()
+    world.enabled = false
+
+    engine.stopRenderLoop(renderLoop)
+
+    scene.dispose()
+  }
 }

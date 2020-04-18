@@ -1,67 +1,49 @@
-import * as babylon from "babylonjs";
-import { World } from "ecsy";
+import * as babylon from "babylonjs"
 
-import { demoScene } from "./demoScene";
+import { demoScene } from "./demoScene"
+import { SceneDisposer } from "./scenes"
 
-import { LightingSystem } from "./systems/LightingSystem";
-import { RendererSystem } from "./systems/RendererSystem";
-import { ShadowCastingSystem } from "./systems/ShadowCastingSystem";
+import { wait } from "./helpers/time"
 
-const world = new World();
+const canvas = document.createElement("canvas")
 
-world
-  .registerSystem(LightingSystem)
-  .registerSystem(ShadowCastingSystem)
-  .registerSystem(RendererSystem);
+canvas.style.position = "absolute"
+canvas.style.top = "0"
+canvas.style.left = "0"
+canvas.style.width = "100%"
+canvas.style.height = "100%"
+canvas.style.touchAction = "none"
 
-console.log("Hello, ", world);
-
-const canvas = document.createElement("canvas");
-
-canvas.style.position = "absolute";
-canvas.style.top = "0";
-canvas.style.left = "0";
-canvas.style.width = "100%";
-canvas.style.height = "100%";
-canvas.style.touchAction = "none";
-
-document.body.appendChild(canvas);
+document.body.appendChild(canvas)
 
 const engine = new babylon.Engine(canvas, true, {
   preserveDrawingBuffer: true,
   stencil: true,
-});
+})
 
-let currentScene: babylon.Scene | null = null;
+let sceneDisposer: SceneDisposer | null = null
 
 const renderDemoScene = () => {
-  currentScene?.dispose();
-  currentScene = null;
+  sceneDisposer?.()
+  sceneDisposer = null
 
-  engine.displayLoadingUI();
+  engine.displayLoadingUI()
 
-  demoScene(engine, world, {
+  demoScene(engine, {
     onExit() {
-      renderDemoScene();
+      renderDemoScene()
     },
-  }).then((scene) => {
-    currentScene = scene;
-    engine.hideLoadingUI();
-  });
-};
+  })
+    .then((disposer) => {
+      sceneDisposer = disposer
 
-window.addEventListener("resize", () => engine.resize());
+      return wait(300)
+    })
+    .then(() => {
+      engine.hideLoadingUI()
+    })
+}
 
-renderDemoScene();
+window.addEventListener("resize", () => engine.resize())
 
-let lastTime = performance.now();
-
-engine.runRenderLoop(() => {
-  const time = performance.now() / 1000;
-  const delta = time - lastTime;
-
-  currentScene?.render();
-  world.execute(delta, time);
-
-  lastTime = time;
-});
+renderDemoScene()
