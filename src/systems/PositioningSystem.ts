@@ -24,16 +24,11 @@ const positionEntity = (entity: Entity) => {
 export class PositioningSystem extends System {
   execute() {
     this.queries.items.results.forEach(positionEntity)
-    this.queries.items.added?.forEach(positionEntity)
   }
 
   static queries = {
     items: {
       components: [Position],
-      listen: {
-        added: true,
-        changed: true,
-      },
     },
   }
 }

@@ -4,12 +4,14 @@ import { World } from "ecsy"
 import { SceneCreator } from "./scenes"
 
 import { Light } from "./components/Light"
+import { Player } from "./components/Player"
 import { Position } from "./components/Position"
 import { Renderable } from "./components/Renderable"
 import { ShadowCaster } from "./components/ShadowCaster"
 import { Sphere } from "./components/Sphere"
 
 import { LightingSystem } from "./systems/LightingSystem"
+import { PlayerMovementSystem } from "./systems/PlayerMovementSystem"
 import { PositioningSystem } from "./systems/PositioningSystem"
 import { RendererSystem } from "./systems/RendererSystem"
 import { ShadowCastingSystem } from "./systems/ShadowCastingSystem"
@@ -33,6 +35,7 @@ export const demoScene: SceneCreator<DemoSceneProps> = async (
   world
     .registerSystem(LightingSystem)
     .registerSystem(ShadowCastingSystem)
+    .registerSystem(PlayerMovementSystem)
     .registerSystem(RendererSystem)
     .registerSystem(PositioningSystem)
 
@@ -44,6 +47,7 @@ export const demoScene: SceneCreator<DemoSceneProps> = async (
     .addComponent(Renderable, { scene })
     .addComponent(Position, { value: new bb.Vector3(0, 1, 0) })
     .addComponent(ShadowCaster)
+    .addComponent(Player)
 
   const balls = Array.from({ length: 100 }).map(() => {
     return world
