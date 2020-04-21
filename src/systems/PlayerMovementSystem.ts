@@ -22,17 +22,19 @@ export class PlayerMovementSystem extends System {
     this.queries.player.results.forEach((entity) => {
       const position = entity.getComponent(Position)
 
+      const speed = 0.03
+
       if (this.#keyState.w) {
-        position.value.z -= 1
+        position.value.y += speed
       }
       if (this.#keyState.a) {
-        position.value.x += 1
+        position.value.x += speed
       }
       if (this.#keyState.s) {
-        position.value.z += 1
+        position.value.y -= speed
       }
       if (this.#keyState.d) {
-        position.value.x -= 1
+        position.value.x -= speed
       }
     })
   }

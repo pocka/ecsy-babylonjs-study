@@ -21,10 +21,9 @@ export class LightingSystem extends System {
       light.position = position
       light.intensity = intensity
 
-      const shadowGenerator = new bb.ShadowGenerator(512, light)
+      const shadowGenerator = new bb.ShadowGenerator(1024, light)
 
-      shadowGenerator.useBlurExponentialShadowMap = true
-      shadowGenerator.blurBoxOffset = 2.0
+      shadowGenerator.usePoissonSampling = true
       shadowGenerator.darkness = 0.5
 
       entity.addComponent(LightSSC, {

@@ -11,14 +11,19 @@ export class RendererSystem extends System {
       const { radius } = entity.getComponent(Sphere)
       const { scene } = entity.getComponent(Renderable)
 
-      const mesh = bb.MeshBuilder.CreateSphere(
+      const mesh = bb.MeshBuilder.CreateBox(
         entity.id.toString(),
         {
-          diameter: radius * 2,
+          width: radius * 2,
+          height: radius * 2,
+          depth: 0.02,
           updatable: false,
         },
         scene
       )
+
+      mesh.setDirection(new bb.Vector3(0, 0, -1))
+      mesh.receiveShadows = true
 
       entity.addComponent(RenderableSSC, { mesh })
     })

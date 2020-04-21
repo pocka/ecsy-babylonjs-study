@@ -3,6 +3,7 @@ import { World } from "ecsy"
 
 import { SceneCreator } from "./scenes"
 
+import { Camera } from "./components/Camera"
 import { Light } from "./components/Light"
 import { Player } from "./components/Player"
 import { Position } from "./components/Position"
@@ -10,6 +11,7 @@ import { Renderable } from "./components/Renderable"
 import { ShadowCaster } from "./components/ShadowCaster"
 import { Sphere } from "./components/Sphere"
 
+import { CameraSystem } from "./systems/CameraSystem"
 import { LightingSystem } from "./systems/LightingSystem"
 import { PlayerMovementSystem } from "./systems/PlayerMovementSystem"
 import { PositioningSystem } from "./systems/PositioningSystem"
@@ -38,14 +40,15 @@ export const demoScene: SceneCreator<DemoSceneProps> = async (
     .registerSystem(PlayerMovementSystem)
     .registerSystem(RendererSystem)
     .registerSystem(PositioningSystem)
+    .registerSystem(CameraSystem)
 
   const scene = new bb.Scene(engine)
 
   const sphere = world
     .createEntity()
-    .addComponent(Sphere, { radius: 1 })
+    .addComponent(Sphere, { radius: 0.1 })
     .addComponent(Renderable, { scene })
-    .addComponent(Position, { value: new bb.Vector3(0, 1, 0) })
+    .addComponent(Position, { value: new bb.Vector3(0, 0, 0.5) })
     .addComponent(ShadowCaster)
     .addComponent(Player)
 
@@ -53,15 +56,15 @@ export const demoScene: SceneCreator<DemoSceneProps> = async (
     return world
       .createEntity()
       .addComponent(Sphere, {
-        radius: rand(0.1, 0.5),
+        radius: rand(0.1, 0.3),
       })
       .addComponent(Renderable, { scene })
       .addComponent(ShadowCaster)
       .addComponent(Position, {
         value: new bb.Vector3(
           rand(-GROUND_SIZE / 2, GROUND_SIZE / 2),
-          rand(1, 8),
-          rand(-GROUND_SIZE / 2, GROUND_SIZE / 2)
+          rand(-GROUND_SIZE / 2, GROUND_SIZE / 2),
+          0
         ),
       })
   })
@@ -70,11 +73,20 @@ export const demoScene: SceneCreator<DemoSceneProps> = async (
     .createEntity()
     .addComponent(Light, {
       scene,
-      lookingAt: new bb.Vector3(0, -1, 0),
+      lookingAt: new bb.Vector3(0, 0, -10),
       intensity: 0.8,
     })
     .addComponent(Position, {
-      value: new bb.Vector3(3, 10, 0),
+      value: new bb.Vector3(0, 0, 20),
+    })
+
+  const camera = world
+    .createEntity()
+    .addComponent(Camera, {
+      scene,
+    })
+    .addComponent(Position, {
+      value: new bb.Vector3(0, 0, 10),
     })
 
   scene.onKeyboardObservable.add(({ event, type }) => {
@@ -85,22 +97,12 @@ export const demoScene: SceneCreator<DemoSceneProps> = async (
     light.remove()
     sphere.remove()
     balls.forEach((ball) => ball.remove())
+    camera.remove()
 
     scene.dispose()
 
     onExit?.()
   })
-
-  const camera = new bb.ArcRotateCamera(
-    "camera",
-    1,
-    1,
-    20,
-    new bb.Vector3(0, 0, 0),
-    scene
-  )
-
-  camera.attachControl(engine.getRenderingCanvas()!, false)
 
   const ground = bb.MeshBuilder.CreateGround(
     "ground",
@@ -111,7 +113,9 @@ export const demoScene: SceneCreator<DemoSceneProps> = async (
     },
     scene
   )
-  ground.position.y = -0.5
+
+  ground.rotate(new bb.Vector3(1, 0, 0), (Math.PI * 90) / 180)
+  ground.position.z = -0.5
   ground.receiveShadows = true
 
   const red = new bb.StandardMaterial("red", scene)
@@ -129,7 +133,10 @@ export const demoScene: SceneCreator<DemoSceneProps> = async (
     const time = performance.now() / 1000
     const delta = time - lastTime
 
-    scene.render()
+    if (scene.activeCamera) {
+      scene.render()
+    }
+
     world.execute(delta, time)
 
     lastTime = time
