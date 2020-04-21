@@ -46,9 +46,9 @@ export const demoScene: SceneCreator<DemoSceneProps> = async (
 
   const sphere = world
     .createEntity()
-    .addComponent(Sphere, { radius: 0.1 })
+    .addComponent(Sphere, { radius: 0.1 } as Sphere)
     .addComponent(Renderable, { scene })
-    .addComponent(Position, { value: new bb.Vector3(0, 0, 0.5) })
+    .addComponent(Position, { value: new bb.Vector3(0, 0, 0.5) } as Position)
     .addComponent(ShadowCaster)
     .addComponent(Player)
 
@@ -57,8 +57,8 @@ export const demoScene: SceneCreator<DemoSceneProps> = async (
       .createEntity()
       .addComponent(Sphere, {
         radius: rand(0.1, 0.3),
-      })
-      .addComponent(Renderable, { scene })
+      } as Sphere)
+      .addComponent(Renderable, { scene } as Renderable)
       .addComponent(ShadowCaster)
       .addComponent(Position, {
         value: new bb.Vector3(
@@ -66,7 +66,7 @@ export const demoScene: SceneCreator<DemoSceneProps> = async (
           rand(-GROUND_SIZE / 2, GROUND_SIZE / 2),
           0
         ),
-      })
+      } as Position)
   })
 
   const light = world
@@ -75,19 +75,19 @@ export const demoScene: SceneCreator<DemoSceneProps> = async (
       scene,
       lookingAt: new bb.Vector3(0, 0, -10),
       intensity: 0.8,
-    })
+    } as Light)
     .addComponent(Position, {
       value: new bb.Vector3(0, 0, 20),
-    })
+    } as Position)
 
   const camera = world
     .createEntity()
     .addComponent(Camera, {
       scene,
-    })
+    } as Camera)
     .addComponent(Position, {
       value: new bb.Vector3(0, 0, 10),
-    })
+    } as Position)
 
   scene.onKeyboardObservable.add(({ event, type }) => {
     if (type !== bb.KeyboardEventTypes.KEYUP || event.key !== "Enter") {
