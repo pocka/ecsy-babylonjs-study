@@ -4,14 +4,14 @@ import { World } from "ecsy"
 import { SceneCreator } from "./scenes"
 
 import { Camera } from "./components/Camera"
-import { Stage } from "./components/Stage"
 import { Light } from "./components/Light"
 import { StandardMaterial } from "./components/StandardMaterial"
 import { Player } from "./components/Player"
 import { Position } from "./components/Position"
 import { Renderable } from "./components/Renderable"
 import { ShadowCaster } from "./components/ShadowCaster"
-import { Sphere } from "./components/Sphere"
+import { Stage } from "./components/Stage"
+import { Sprite } from "./components/Sprite"
 
 import { CameraSystem } from "./systems/CameraSystem"
 import { LightingSystem } from "./systems/LightingSystem"
@@ -27,7 +27,7 @@ interface DemoSceneProps {
   onExit?(): void
 }
 
-const GROUND_SIZE = 10
+const GROUND_SIZE = 20
 
 const rand = (min: number, max: number) => Math.random() * (max - min) + min
 
@@ -48,11 +48,10 @@ export const demoScene: SceneCreator<DemoSceneProps> = async (
 
   const scene = new bb.Scene(engine)
 
-  const sphere = world
+  const player = world
     .createEntity()
-    .addComponent(Sphere, { radius: 0.1 } as Sphere)
     .addComponent(Renderable, { scene })
-    .addComponent(Position, { value: new bb.Vector3(0, 0, 0.5) } as Position)
+    .addComponent(Position, { value: new bb.Vector3(0, 0, 1) } as Position)
     .addComponent(ShadowCaster)
     .addComponent(Player)
     .addComponent(StandardMaterial, {
@@ -60,13 +59,20 @@ export const demoScene: SceneCreator<DemoSceneProps> = async (
       specularColor: new bb.Color3(0, 1, 0),
       scene,
     } as StandardMaterial)
+    .addComponent(Sprite, {
+      width: 1,
+      height: 1,
+    })
 
-  const balls = Array.from({ length: 100 }).map(() => {
+  const enemys = Array.from({ length: 100 }).map(() => {
+    const size = rand(0.5, 1)
+
     return world
       .createEntity()
-      .addComponent(Sphere, {
-        radius: rand(0.1, 0.3),
-      } as Sphere)
+      .addComponent(Sprite, {
+        width: size,
+        height: size,
+      } as Sprite)
       .addComponent(Renderable, { scene } as Renderable)
       .addComponent(ShadowCaster)
       .addComponent(Position, {
@@ -106,8 +112,8 @@ export const demoScene: SceneCreator<DemoSceneProps> = async (
   const stage = world
     .createEntity()
     .addComponent(Stage, {
-      width: 10,
-      height: 10,
+      width: GROUND_SIZE,
+      height: GROUND_SIZE,
     } as Stage)
     .addComponent(Renderable, { scene } as Renderable)
     .addComponent(Position, {
@@ -125,8 +131,8 @@ export const demoScene: SceneCreator<DemoSceneProps> = async (
     }
 
     light.remove()
-    sphere.remove()
-    balls.forEach((ball) => ball.remove())
+    player.remove()
+    enemys.forEach((ball) => ball.remove())
     camera.remove()
     stage.remove()
 

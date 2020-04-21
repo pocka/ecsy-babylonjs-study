@@ -3,20 +3,20 @@ import { Not, System } from "ecsy"
 
 import { Renderable } from "../components/Renderable"
 import { RenderableSSC } from "../components/RenderableSSC"
-import { Sphere } from "../components/Sphere"
 import { Stage } from "../components/Stage"
+import { Sprite } from "../components/Sprite"
 
 export class RendererSystem extends System {
   execute() {
-    this.queries.addedSpheres.results.forEach((entity) => {
-      const { radius } = entity.getComponent(Sphere)
+    this.queries.addedSprites.results.forEach((entity) => {
+      const { width, height } = entity.getComponent(Sprite)
       const { scene } = entity.getComponent(Renderable)
 
       const mesh = bb.MeshBuilder.CreateBox(
         entity.id.toString(),
         {
-          width: radius * 2,
-          height: radius * 2,
+          width,
+          height,
           depth: 0.01,
           updatable: false,
         },
@@ -69,8 +69,8 @@ export class RendererSystem extends System {
   }
 
   static queries = {
-    addedSpheres: {
-      components: [Sphere, Renderable, Not(RenderableSSC)],
+    addedSprites: {
+      components: [Sprite, Renderable, Not(RenderableSSC)],
     },
     removed: {
       components: [Not(Renderable), RenderableSSC],
